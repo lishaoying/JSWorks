@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #div1{width:200px;height:200px;padding: 5px;border:5px solid #000000;
+        position:relative;}
+        #div1 .small_pic{width:200px;height:200px;position:relative;}
+        #div1 .small_pic .float_layer{width:120px;height:120px;border:2px solid #000000;
+            position:absolute;top:0;left:0;background:#ffffff;
+            filter:alpha(opacity:30);opacity:0.3;display:none;}
+        #div1 .small_pic .mark{width:100%;height:100%;position:absolute;top:0;
+            left:0;z-index:2;background: red;filter:alpha(opacity:0);opacity:0; }
+        #div1 .big_pic{width:270px;height:270px;position:absolute;top:-5px;
+            left:220px;border:10px solid #CCCCCC;overflow: hidden;display: none;}
+        #div1 .big_pic img{position: absolute;top:-30px;left:-80px;}
+    </style>
+    <script>
+        function getByClass(oParent,className) {
+            var aE = oParent.getElementsByTagName('*');
+            var arr = [];
+            for (var i=0;i<aE.length;i++) {
+                if(aE[i].className==className){
+                    arr.push(aE[i]);
+                }
+            }
+            return arr;
+        }
+        window.onload=function(){
+            var oDiv=document.getElementById('div1');
+            var oMark=getByClass(oDiv,'mark')[0];
+            var oLayer=getByClass(oDiv,'float_layer')[0];
+            var oBig=getByClass(oDiv,'big_pic')[0];
+            var oSmall=getByClass(oDiv,'small_pic')[0];
+            var bigImg=oBig.getElementsByTagName('img')[0];
+            oMark.onmouseover=function(){
+               oLayer.style.display='block';
+                oBig.style.display='block';
+            };
+            oMark.onmouseout=function(){
+                oLayer.style.display='none';
+                oBig.style.display='none';
+            };
+            oMark.onmousemove=function(ev){
+                var oEvent=ev||event;
+                var l=oEvent.clientX-oDiv.offsetLeft-oSmall.offsetLeft-oLayer.offsetWidth/2;
+                var t=oEvent.clientY-oDiv.offsetTop-oSmall.offsetTop-oLayer.offsetWidth/2;
+                if(l<0){
+                    l=0;
+                }else if(l>oMark.offsetWidth-oLayer.offsetWidth){
+                    l=oMark.offsetWidth-oLayer.offsetWidth;
+                }
+                if(t<0){
+                    t=0;
+                }else if(t>oMark.offsetHeight-oLayer.offsetHeight){
+                    t=oMark.offsetHeight-oLayer.offsetHeight;
+                }
+                oLayer.style.left=l+'px';
+                oLayer.style.top=t+'px';
+
+                var percentX=l/(oMark.offsetWidth-oLayer.offsetWidth);
+                var percentY=t/(oMark.offsetHeight-oLayer.offsetHeight);
+                bigImg.style.left=-percentX*(bigImg.offsetWidth-oBig.offsetWidth)+'px';
+                bigImg.style.top=-percentY*(bigImg.offsetHeight-oBig.offsetHeight)+'px';
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="div1">
+    <div class="small_pic">
+        <span class="mark"></span>
+        <span class="float_layer"></span>
+        <img src="images/small.png"/>
+    </div>
+    <div class="big_pic">
+        <img src="images/big.png"/>
+    </div>
+</div>
+</body>
+</html>

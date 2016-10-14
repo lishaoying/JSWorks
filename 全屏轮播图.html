@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{margin:0;padding:0;}
+        li{list-style: none;}
+        #div1{min-width: 1000px;height:396px;position:relative;overflow: hidden;}
+        #div1 ul{position:absolute;left:0;border: 5px solid #000000}
+        #div1 ul li{float:left;}
+        #div1 ul li img{position:relative;left:0;}
+
+        #btn{position:absolute;bottom:0;width:100%;text-align: center;}
+        #btn a{cursor:pointer;display: inline-block;width:11px;height:11px;background: #CCCCCC;}
+        #btn a.active{background: white;}
+        #btn a:hover{background:white;}
+    </style>
+    <script src="move.js"></script>
+    <script>
+        window.onload=function(){
+            var oDiv=document.getElementById('div1');
+            var oUl=oDiv.getElementsByTagName('ul')[0];
+            var aLi=oUl.getElementsByTagName('li');
+            var aImg=oUl.getElementsByTagName('img');
+
+            var oBtn=document.getElementById('btn');
+            var aA=oBtn.getElementsByTagName('a');
+
+            var imgWidth=1920;
+            var iNow=0;
+            var iNow2=0;
+//            alert(aA);
+            oUl.style.width=(aImg.length)*imgWidth+'px';
+            function toReSize(){
+                var viewWidth=document.documentElement.clientWidth;
+                if(viewWidth>1000) {
+                    for (var i = 0; i < aImg.length; i++) {
+                        aImg[i].style.left = -(imgWidth - viewWidth) / 2 + 'px';
+                    }
+                }
+            }
+            toReSize();
+            window.onresize=function(){
+                toReSize();
+            };
+
+            for(var i=0;i<aA.length;i++){
+                aA[i].index=i;
+                aA[i].onclick=function(){
+                    for(var j=0;j<aA.length;j++){
+                        aA[j].className='';
+                    }
+                    this.className='active';
+                   startMove(oUl,{left:-this.index*imgWidth});
+                }
+            }
+
+            setInterval(toRun,3000);
+            function toRun(){
+                if(iNow==aA.length-1){
+                    iNow=0;
+                    aLi[0].style.position='relative';
+                    aLi[0].style.left=aA.length*imgWidth+'px';
+                }else{
+                    iNow++;
+                }
+                iNow2++;
+                for(var i=0;i<aA.length;i++){
+                    aA[i].className='';
+                }
+                aA[iNow].className='active';
+                startMove(oUl,{left:-(iNow2*imgWidth)},function(){
+                    if(iNow==0){
+                     aLi[0].style.position='static';
+                     oUl.style.left=0;
+                     iNow2=0;
+                    }
+                });
+            }
+        };
+    </script>
+</head>
+<body>
+<div id="div1">
+    <ul>
+        <li><img src="images/1.jpg"/></li>
+        <li><img src="images/2.jpg"/></li>
+        <li><img src="images/3.jpg"/></li>
+    </ul>
+    <div id="btn">
+        <a href="javascript:" class="active"></a>
+        <a href="javascript:"></a>
+        <a href="javascript:"></a>
+    </div>
+</div>
+</body>
+</html>
